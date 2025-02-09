@@ -18,13 +18,24 @@ app.use(cors({ origin: "*" }));
 
 const PORT = process.env.PORT || 5000;
 const credentialsPath = process.env.NODE_ENV === 'production' ? "/etc/secrets/credentials.json" : "credentials.json";
-const credentials = JSON.parse(fs.readFileSync(credentialsPath));
+let credentials;
+try {
+    credentials = JSON.parse(fs.readFileSync(credentialsPath));
+} catch (err) {
+    console.error("Error reading credentials file:", err);
+    process.exit(1); // Exit the process with an error code
+}
 
-const auth = new google.auth.GoogleAuth({
-    credentials,
-    scopes: ["https://www.googleapis.com/auth/spreadsheets"],
-});
-
+let auth;
+try {
+    auth = new google.auth.GoogleAuth({
+        credentials,
+        scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+    });
+} catch (err) {
+    console.error("Error initializing GoogleAuth:", err);
+    process.exit(1); // Exit the process with an error code
+}
 function convertToDirectLink(driveUrl) {
     const match = driveUrl.match(/(?:id=|\/d\/)([a-zA-Z0-9-_]+)/);
     return match ? `https://drive.google.com/thumbnail?export=view&id=${match[1]}&sz=s800` : null;
