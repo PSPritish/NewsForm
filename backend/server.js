@@ -17,7 +17,9 @@ app.use(cors({ origin: "*" }));
 
 
 const PORT = process.env.PORT || 5000;
-const credentials = JSON.parse(fs.readFileSync("credentials.json"));
+const credentialsPath = process.env.NODE_ENV === 'production' ? "/etc/secrets/credentials.json" : "credentials.json";
+const credentials = JSON.parse(fs.readFileSync(credentialsPath));
+
 const auth = new google.auth.GoogleAuth({
     credentials,
     scopes: ["https://www.googleapis.com/auth/spreadsheets"],
