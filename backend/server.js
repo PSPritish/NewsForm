@@ -8,6 +8,7 @@ const News = require("./models/news.model");
 const validateNewsEntry = require("./config/validator");
 const isDuplicate = require("./config/duplicate_check");
 const moderateImage = require("./config/moderateimage");
+const path = require("path");
 dotenv.config();
 
 const app = express();
@@ -100,7 +101,10 @@ app.get("/api/cities", async (req, res) => {
         res.status(500).json({ success: false, error: err.message });
     }
 });
-
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '../frontend/dist')))
+    app.get('*', (req, res) => res.sendFile(path.resolve(__dirname, 'frontend', 'dist', 'index.html')));
+}
 
 app.listen(PORT, () => {
     connectDB();
