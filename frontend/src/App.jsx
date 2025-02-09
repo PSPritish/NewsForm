@@ -8,7 +8,7 @@ function App() {
 
   async function fetchCities() {
     try {
-      const response = await fetch("http://localhost:3000/api/cities");
+      const response = await fetch("/api/cities");
       const data = await response.json();
       setCities(data.data); // Set unique cities in state
     } catch (err) {
@@ -18,7 +18,7 @@ function App() {
 
   async function fetchNews() {
     try {
-      let url = "http://localhost:3000/api/news";
+      let url = "/api/news";
       const params = new URLSearchParams();
 
       if (city) params.append("city", city);
